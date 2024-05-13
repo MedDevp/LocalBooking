@@ -23,6 +23,19 @@ function Calendar() {
       events: []
     }
   ]);
+
+  const createEvent = async (eventData) => {
+    try {
+      const response = await axios.post("/api/events", eventData);
+      console.log("Event created:", response.data);
+      // Ajoutez ici toute logique supplémentaire après la création de l'événement
+    } catch (error) {
+      console.error("Error creating event:", error);
+      // Gérez les erreurs ici
+    }
+  };
+  
+
   const [selectedRoom, setSelectedRoom] = useState(""); // État pour la salle sélectionnée
 
   const handleDateClick = (arg) => {
@@ -79,8 +92,9 @@ function Calendar() {
       allDay: eventInfo.allDay,
       participants: formData.participants,
       color: formData.color,
-      id: generateEventId(), // Génère un identifiant unique pour l'événement
     };
+
+    createEvent(newEvent);
 
     const updatedRooms = rooms.map(room => {
       if (room.id === formData.roomType) {
