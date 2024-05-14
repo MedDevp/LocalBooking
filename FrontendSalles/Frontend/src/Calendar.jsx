@@ -3,25 +3,25 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-
+import axios from 'axios';
 function Calendar() {
   const [eventInfo, setEventInfo] = useState(null);
   const [rooms, setRooms] = useState([
     {
       id: "meeting",
       title: "Salle de réunion",
-      events: []
+      events: [],
     },
     {
       id: "conference",
       title: "Salle de conférence",
-      events: []
+      events: [],
     },
     {
       id: "event",
       title: "Espace événementiel",
-      events: []
-    }
+      events: [],
+    },
   ]);
 
   const createEvent = async (eventData) => {
@@ -34,7 +34,6 @@ function Calendar() {
       // Gérez les erreurs ici
     }
   };
-  
 
   const [selectedRoom, setSelectedRoom] = useState(""); // État pour la salle sélectionnée
 
@@ -56,13 +55,13 @@ function Calendar() {
       end: arg.event.end,
     };
 
-    const updatedRooms = rooms.map(room => {
+    const updatedRooms = rooms.map((room) => {
       if (room.id === roomId) {
         return {
           ...room,
-          events: room.events.map(event =>
+          events: room.events.map((event) =>
             event.id === updatedEvent.id ? updatedEvent : event
-          )
+          ),
         };
       }
       return room;
@@ -96,11 +95,11 @@ function Calendar() {
 
     createEvent(newEvent);
 
-    const updatedRooms = rooms.map(room => {
+    const updatedRooms = rooms.map((room) => {
       if (room.id === formData.roomType) {
         return {
           ...room,
-          events: [...room.events, newEvent]
+          events: [...room.events, newEvent],
         };
       }
       return room;
@@ -127,8 +126,14 @@ function Calendar() {
     const startDate = event.start;
     const endDate = event.end;
 
-    const startTime = startDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    const endTime = endDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const startTime = startDate.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const endTime = endDate.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
     info.el.innerHTML = `
       <div>
@@ -144,16 +149,24 @@ function Calendar() {
       {/* Formulaire pour choisir une salle */}
       <div>
         <label>Choisir une salle :</label>
-        <select value={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)}>
+        <select
+          value={selectedRoom}
+          onChange={(e) => setSelectedRoom(e.target.value)}
+        >
           <option value="">Sélectionner une salle</option>
-          {rooms.map(room => (
-            <option key={room.id} value={room.id}>{room.title}</option>
+          {rooms.map((room) => (
+            <option key={room.id} value={room.id}>
+              {room.title}
+            </option>
           ))}
         </select>
       </div>
       {/* Afficher les calendriers pour chaque salle */}
-      {rooms.map(room => (
-        <div key={room.id} style={{ display: room.id === selectedRoom ? "block" : "none" }}>
+      {rooms.map((room) => (
+        <div
+          key={room.id}
+          style={{ display: room.id === selectedRoom ? "block" : "none" }}
+        >
           <h2>{room.title}</h2>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -170,9 +183,15 @@ function Calendar() {
             selectable={true}
             events={room.events}
             editable={true}
-            eventRender={eventRender}
           />
-          {eventInfo && selectedRoom === room.id && <EventForm eventInfo={eventInfo} roomType={room.id} onSubmit={handleSubmit} />}
+
+          {eventInfo && selectedRoom === room.id && (
+            <EventForm
+              eventInfo={eventInfo}
+              roomType={room.id}
+              onSubmit={handleSubmit}
+            />
+          )}
         </div>
       ))}
     </div>
@@ -184,7 +203,7 @@ function EventForm({ eventInfo, roomType, onSubmit }) {
     event: "",
     comment: "",
     participants: "",
-    color: ""
+    color: "",
   });
 
   const handleChange = (e) => {
@@ -205,7 +224,6 @@ function EventForm({ eventInfo, roomType, onSubmit }) {
     // Valider les données du formulaire si nécessaire
     onSubmit({ event, comment, participants, color, roomType });
   };
-
 
   return (
     <div className="event-form">

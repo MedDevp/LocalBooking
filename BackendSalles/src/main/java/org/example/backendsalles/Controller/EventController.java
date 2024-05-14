@@ -22,6 +22,7 @@ public class EventController {
     public ResponseEntity<Event> createEvent(@RequestBody Event event) {
         Event savedEvent = eventService.saveEvent(event);
         return new ResponseEntity<>(savedEvent, HttpStatus.CREATED);
-
     }
+
+
 }
